@@ -29,7 +29,7 @@ class BoardsListView(viewsets.ViewSet):
         serializer = BoardListSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def create(self, request):
+    def create(self, request, pk=None):
         data = request.data
         serializer = BoardSerializer(data=data, many=False)
         if serializer.is_valid():
@@ -37,31 +37,42 @@ class BoardsListView(viewsets.ViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk):
+        queryset = get_object_or_404(Board, pk=pk)
+        queryset.delete()
+        return Response(status=status.HTTP_200_OK)
+
     def retrieve(self, request, pk=None):
         queryset = get_object_or_404(Board, pk=pk)
         serializer = BoardListSerializer(queryset)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["get", "post", "delete"])
+    @action(detail=True, methods=["get", "post"])
     def topics(self, request, pk=None):
-        queryset = Topic.objects.filter(board__pk=pk)
-        serializer = TopicsListSerializer(queryset, many=True)
-        #
-        # if request.method == 'POST':
-        #     data = request.data
-        #     Topic.objects.create(**data)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if request.method == "GET":
+            queryset = Topic.objects.filter(board__pk=pk)
+            serializer = TopicsListSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        elif request.method == "POST":
+            data = request.data
+            serializers = TopicCreateSerializer(data=data, many=False)
+            if serializers.is_valid():
+                serializers.save()
+                return Response(serializers.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True,
-            methods=["get", "delete"],
+            methods=["get"],
             url_path='topics/(?P<topic_pk>[^/.]+)')
     def retrieve_topic(self, request, pk=None, topic_pk=None):
-        queryset = get_object_or_404(Topic, pk=topic_pk)
+        print(request,'lolol', pk, '1231', topic_pk, flush=True)
+        # board = Topic.objects.get(board__pk=pk)
+        print(pk)
+        queryset = get_object_or_404(Topic, pk=topic_pk, board__pk=pk)
         serializer = TopicDetailSerializer(queryset)
-        if request.method == "DELETE":
-            queryset.delete()
-            return Response(status=status.HTTP_200_OK)
-
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
