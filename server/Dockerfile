@@ -6,6 +6,7 @@ COPY Pipfile.lock /
 # RUN pip install -U pipenv pip setuptools wheel
 # RUN pipenv install --system --ignore-pipfile
 ADD ./requirements.txt /tmp/requirements.txt
+
 RUN pip install --upgrade pip
 RUN pip install -r /tmp/requirements.txt
 RUN apt-get update

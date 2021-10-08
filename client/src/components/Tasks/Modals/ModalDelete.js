@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Modal, MDBBtn } from "mdbreact";
-import IosCloseCircleOutline from "react-ionicons/lib/IosCloseCircleOutline";
+import {IosCloseCircleOutline} from "react-ionicons";
 
 import "./style.css";
 

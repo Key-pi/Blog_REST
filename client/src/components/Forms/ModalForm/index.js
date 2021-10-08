@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Modal } from "mdbreact";
-import IosClose from "react-ionicons/lib/IosClose";
+import {IosClose} from "react-ionicons";
 
 const ModalForm = props => {
   const flex = {

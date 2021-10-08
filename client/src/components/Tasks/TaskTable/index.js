@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 import ReactTable from "react-table";
 
-import IosRemoveCircleOutline from "react-ionicons/lib/IosRemoveCircleOutline";
-import IosCreateOutline from "react-ionicons/lib/IosCreateOutline";
+import {IosRemoveCircleOutline} from "react-ionicons";
+import {IosCreateOutline} from "react-ionicons";
 import Pagination from "./PaginateTable";
 
 class TaskTable extends React.Component {

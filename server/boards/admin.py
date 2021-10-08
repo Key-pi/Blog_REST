@@ -23,4 +23,4 @@ class PostAdmin(admin.ModelAdmin):
 admin.site.register(Board, BoardAdmin)
 admin.site.register(Topic, TopicAdmin)
 admin.site.register(Post, PostAdmin)
-admin.site.register(Photo)
+admin.site.register(Image)

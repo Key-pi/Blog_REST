@@ -1,5 +1,8 @@
 from django.db import models
-from accounts.models  import User
+from simple_history.models import HistoricalRecords
+# from django.contrib.auth.models import User
+from accounts.models import User
+# from accounts.models  import CustomUser
 from django.urls import reverse
 from django.utils.text import Truncator
 # from markdown import markdown
@@ -7,7 +10,7 @@ from django.utils.text import Truncator
 # rom simple_history.models import HistoricalRecords
 """
 import math
-
+from django.utils import timezone
 
 class BoardManager(models.Manager):
 
@@ -18,7 +21,7 @@ class BoardManager(models.Manager):
 class Board(models.Model):
     name = models.CharField(max_length=30, unique=True, verbose_name='board')
     description = models.CharField(max_length=100, verbose_name='description')
-    # history = HistoricalRecords()
+    history = HistoricalRecords()
     is_active = models.BooleanField(default=True, null=True, blank=True)
     objects = BoardManager()
 
@@ -30,21 +33,17 @@ class Board(models.Model):
     def __str__(self):
         return self.name
 
-    def get_posts_count(self):
-        return Post.objects.filter(topic__board=self).count()
-
     def get_absolute_url(self):
         return reverse("board_topics", kwargs={"pk": self.pk})
 
-    def get_last_post(self):
-        return Post.objects.filter(topic__board=self).order_by('-created_at').first()
+
+# class Photo(models.Model):
+#     title = models.CharField(max_length=255, blank=True, null=True)
+#     file = models.ImageField(upload_to='photos/')
+#     uploaded_at = models.DateTimeField(auto_now_add=True)
+#     topic = models.ForeignKey("Topic", on_delete=models.CASCADE)
 
 
-class Photo(models.Model):
-    title = models.CharField(max_length=255, blank=True, null=True)
-    file = models.ImageField(upload_to='photos/')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-    topic = models.ForeignKey("Topic", on_delete=models.CASCADE)
 
 
 class Topic(models.Model):
@@ -60,6 +59,19 @@ class Topic(models.Model):
 
     def __str__(self):
         return self.subject
+
+
+class Image(models.Model):
+    topic = models.ForeignKey(Topic, null=True, blank=True, on_delete=models.CASCADE, related_name='images',
+                                 related_query_name='images')
+    file_field = models.ImageField(upload_to='gallery_topics/')
+
+    class Meta:
+        verbose_name = 'image'
+        verbose_name_plural = 'images'
+
+    def __str__(self):
+        return str(self.id)
 
     # def get_photo(self):
     #     return Photo.objects.filter(topic=self).first()
@@ -91,7 +103,7 @@ class Post(models.Model):
     message = models.TextField(max_length=4000, help_text='Max size field 4000 symb', verbose_name='message')
     topic = models.ForeignKey(Topic, related_name='posts', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(null=True)
+    updated_at = models.DateTimeField(null=True, auto_now_add=True)
     created_by = models.ForeignKey(User,  on_delete=models.CASCADE)
     updated_by = models.ForeignKey(User, null=True, related_name='+', on_delete=models.CASCADE)
 
@@ -105,3 +117,4 @@ class Post(models.Model):
 
     # def get_message_as_markdown(self):
     #     return mark_safe(markdown(self.message, safe_mode='escape'))
+

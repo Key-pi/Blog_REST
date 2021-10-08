@@ -1,5 +1,6 @@
 import React from "react";
-import IosAddCircleOutline from "react-ionicons/lib/IosAddCircleOutline";
+import {IosAddCircleOutline} from "react-ionicons";
+
 
 import "./style.css";
 

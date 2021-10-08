@@ -9,12 +9,23 @@ from rest_framework import routers
 from boards import views as boards_views
 from accounts import views as account_views
 from core import views as core_views
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+
+
+
+
+
+
 
 router = routers.DefaultRouter()
 router.register(r'users', account_views.UserViewSet)
 router.register(r'tasks', core_views.TaskViewSet)
 router.register(r'boards', boards_views.BoardsListView, basename="boards")
-router.register(r'topic', boards_views.TopicListView)
+# router.register(r'topic', boards_views.TopicListView)
 
 
 urlpatterns = [
